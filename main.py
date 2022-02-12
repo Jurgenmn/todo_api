@@ -1,10 +1,20 @@
 from flask import Flask, request, jsonify
 import psycopg2
 import utils
+from dotenv import load_dotenv
+import os
+
+
+load_dotenv()
+
+DBURL= os.getenv("DBURL")
+USER = os.getenv("DB_USER")
+DBNAME = os.getenv("DBNAME")
+PASSWORD = os.getenv("PASSWORD")
+PORT = os.getenv("PORT")
 
 # Connect to your postgres DB
-conn = psycopg2.connect(host="localhost", dbname="to_do_api",
-                        user="jay", password="password")
+conn = psycopg2.connect(host=DBURL, dbname=DBNAME, user=USER, password=PASSWORD, port=PORT, sslmode="require")
 
 # Open a cursor to perform database operations
 cur = conn.cursor()
@@ -17,6 +27,7 @@ def index():
     query = "SELECT * FROM person;"
     cur.execute(query)
     users = cur.fetchall()
+    print(users)
     users_lst = []
     for user in users:
         obj = {"id": user[0], "name": user[1], "user_name": user[2]}
@@ -87,3 +98,4 @@ def delete_activity_from_person(user_id, activity_id):
     # # delete request to the same route on top
     # debug=True make the server reload on changes
 app.run("localhost", 3000, debug=True)
+

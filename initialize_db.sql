@@ -15,7 +15,7 @@ CREATE TABLE activity(
     activity_details TEXT NOT NULL,
     person_id INT NOT NULL,
     CONSTRAINT FK_person FOREIGN KEY (person_id)
-    REFERENCES person(id) ON DELETE CASCADE --delete all activities of the user 
+    REFERENCES person(id) ON DELETE CASCADE --delete all activities of the user (if we delete a person (user))
 );
 
 INSERT INTO person(name, user_name, password) VALUES('John', 'j123', 'a123');
