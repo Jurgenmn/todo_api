@@ -92,10 +92,26 @@ def delete_activity_from_person(user_id, activity_id):
     return jsonify(activity)
 
 
+@app.route("/person/<int:user_id>/activities", methods=["POST"])
+def create_activity(user_id):
+    print(user_id)
+    print(request.json)
+    user = utils.get(cur, "person", user_id)
+    if user == None:
+        return (jsonify({"error": "resource not found"}), 404)
+    
+    cur.execute(f"INSERT INTO activity(activity_details, person_id) VALUES('{request.json['activity_details']}', {user_id})")
+    conn.commit()
+    return (jsonify({"status": "succes"}))
+
+
+
     # # create 2 end endponts
     # # get 2 specific users  get request
     # # / users/2
     # # delete request to the same route on top
     # debug=True make the server reload on changes
+    #create another endpoint to create a user
+
 app.run("localhost", 3000, debug=True)
 
