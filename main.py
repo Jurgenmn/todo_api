@@ -106,12 +106,5 @@ def create_activity(user_id):
 
 
 
-    # # create 2 end endponts
-    # # get 2 specific users  get request
-    # # / users/2
-    # # delete request to the same route on top
-    # debug=True make the server reload on changes
-    #create another endpoint to create a user
-
 app.run("localhost", 3000, debug=True)
 
