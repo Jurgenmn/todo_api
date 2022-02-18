@@ -1,23 +1,12 @@
 from flask import Flask, request, jsonify
-import psycopg2
 import utils
-from dotenv import load_dotenv
-import os
 
 
-load_dotenv()
-
-DBURL= os.getenv("DBURL")
-USER = os.getenv("DB_USER")
-DBNAME = os.getenv("DBNAME")
-PASSWORD = os.getenv("PASSWORD")
-PORT = os.getenv("PORT")
-
-# Connect to your postgres DB
-conn = psycopg2.connect(host=DBURL, dbname=DBNAME, user=USER, password=PASSWORD, port=PORT, sslmode="require")
+conn = utils.init_env()
 
 # Open a cursor to perform database operations
 cur = conn.cursor()
+
 
 app = Flask(__name__)
 
@@ -103,6 +92,27 @@ def create_activity(user_id):
     cur.execute(f"INSERT INTO activity(activity_details, person_id) VALUES('{request.json['activity_details']}', {user_id})")
     conn.commit()
     return (jsonify({"status": "succes"}))
+
+
+@app.route("/user", methods=["POST"])
+def create_user():
+
+    cur.execute(f"INSERT INTO person(name, user_name, password) VALUES('{request.json['name']}', '{request.json['username']}', '{request.json['password']}')")
+    conn.commit()
+    return (jsonify({"status": "succes"}))
+
+
+#person and user are refered to the same table
+
+@app.route("/user/<int:person_id>", methods=["DELETE"])
+def del_person(person_id):
+    user = utils.get(cur, "person", person_id)
+    if user == None:
+        return (jsonify({"error": "resource not found"}), 404)
+
+    cur.execute(f"DELETE FROM person WHERE id = {person_id}")
+    conn.commit()
+    return jsonify(user)
 
 
 
